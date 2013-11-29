@@ -9,8 +9,6 @@ try:
 except ImportError:
     shapefile_loaded = False
 
-from pprint import pprint
-
 
 class WirelessNetwork(object):
     def __init__(self, essid, lat, lng):
