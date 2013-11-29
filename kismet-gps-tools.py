@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import argparse
 import sys
+import xml.etree.ElementTree as ET
 
-from xml.dom.minidom import parseString
+from pprint import pprint
 
 
 class ShapeFileSerializer(object):
@@ -12,14 +13,27 @@ class ShapeFileSerializer(object):
 class KMLSerialzier(object):
     _serializer_id = 'kml'
 
+
 class NetXMLParser(object):
     def __init__(self, filename):
         self.filename = filename
 
     def parse(self):
-        with open(self.filename) as input_file:
-            input_dom = parseString(input_file)
-            wireless_networks = input_dom.getElementsByTagName('wireless-network')
+        root = ET.parse(self.filename).getroot()
+        wireless_networks = root.iter('wireless-network')
+        for network in wireless_networks:
+            self.parse_network(network)
+
+    def parse_network(self, network):
+        bssid = network.find('BSSID').text
+            ssid = network.find('SSID')
+            if ssid:
+                print ssid.find('essid').text
+
+
+def run(input_filename, output_format):
+    NetXMLParser(input_filename).parse()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Kismet GPS Tools')
@@ -29,4 +43,4 @@ if __name__ == '__main__':
         help='output file format', required=True)
 
     args = parser.parse_args()
-    print(args.input_file, args.output_format)
+    run(args.input_file, args.output_format)
