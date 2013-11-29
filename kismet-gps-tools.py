@@ -60,7 +60,7 @@ class NetXMLParser(object):
         bssid = network.find('BSSID').text
         ssid = network.find('SSID')
         gpsinfo = network.find('gps-info')
-        if ssid and gpsinfo:
+        if ssid is not None and gpsinfo is not None:
             essid = ssid.find('essid').text
             lat = float(gpsinfo.find('avg-lat').text)
             lng = float(gpsinfo.find('avg-lon').text)
