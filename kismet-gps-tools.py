@@ -32,6 +32,10 @@ class ShapefileSerializer(object):
         for network in self.networks:
             logging.debug('Adding point: {},{}'.format(network.lat, network.lng))
             w.point(network.lng, network.lat)
+        w.field('ESSID')
+        for network in self.networks:
+            logging.debug('Adding ESSID: {}'.format(network.essid))
+            w.record(network.essid)
         w.save('shapefiles/networks')
         logging.info('Saved shapefiles to shapefiles/networks.*')
 
