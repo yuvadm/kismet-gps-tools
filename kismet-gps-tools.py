@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import logging
 import sys
 import xml.etree.ElementTree as ET
 
@@ -28,6 +29,7 @@ class ShapeFileSerializer(object):
     def serialize(self):
         w = shapefile.Writer(shapefile.POINT)
         for network in self.networks:
+            logging.debug('Adding point: {},{}'.format(network.lat, network.lng))
             w.point(network.lat, network.lng)
         w.save('test')
 
@@ -77,6 +79,11 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--output-format', metavar='output_format',type=str,
         choices=[c._serializer_id for c in (KMLSerialzier, ShapeFileSerializer)],
         help='output file format', required=True)
+    parser.add_argument('-v', '--verbose', help='verbose output', action='store_true', default=False)
 
     args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+
     run(args.input_file, args.output_format)
